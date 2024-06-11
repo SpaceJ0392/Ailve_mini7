@@ -4,15 +4,22 @@
     <head>        
         <title>Django</title>
         <meta charset="utf-8">    
-        <link rel="stylesheet" href="{% static 'base.css' %}" />    
+        <link rel="stylesheet" href="{% static 'base.css' %}" />
+
+        {% comment %} web font {% endcomment %}
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
     </head>
     <body>
-        <h1><a href="/">Django</a></h1>
-        <h2>정우주(a051178)</h2>
-        <ol>
-            <li><a href="/chatgpt/">단발성 질문, 답변 페이지</a></li>
-            <li><a href="/selfchatgpt/">단발성 질문, 답변 페이지 self</a></li>
-        </ol>
-        <h2>Django</h2>
-        <p><a href="https://www.djangoproject.com/" target="_blank">Django</a>는 Python으로 작성된 오픈 소스 웹 프레임워크로, 빠르고 쉬운 웹 개발을 가능하게 합니다.</p>
+        <div class="display">
+            <h1 class="header"><a href="/"><img class="logo" src="{% static '/assets/chat.jpg' %}"></a></h1>
+            <div class="container display">
+                <div class="subtitle noto-sans">AI트랙 수도권 2반 7조</div>
+                <h1 class="noto-sans-bold">7차 미니 프로젝트</h1>
+                <div class="btn noto-sans"><a href="/chatgpt/">대화하기 ></a></div>
+                {% comment %} <h2>Django</h2>
+                <p><a href="https://www.djangoproject.com/" target="_blank">Django</a>는 Python으로 작성된 오픈 소스 웹 프레임워크로, 빠르고 쉬운 웹 개발을 가능하게 합니다.</p> {% endcomment %}
+            </div>
+        </div>
     </body>

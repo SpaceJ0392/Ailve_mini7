@@ -1,3 +1,68 @@
-h1{
-    background-color: aquamarine;
+.display {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+li {
+    list-style: none;
+    margin: 20px;
+}
+
+.header {
+    max-width: 980px;
+    width: 95vw;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin: 0px;
+}
+
+.logo {
+    max-width: 30px;
+    float: left;
+}
+
+.noto-sans {
+    font-family: "Noto Sans KR", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: normal;
+    font-style: normal;
+}
+
+.noto-sans-bold {
+    font-family: "Noto Sans KR", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: bold;
+    font-style: normal;
+}
+
+.container {
+    max-width: 980px;
+    width: 95vw;
+    padding: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.subtitle {
+    margin-top: 15vw;
+}
+
+.btn {
+    max-width: 200px;
+    width: 150px;
+    height: 50px;
+    margin-top: 5vw;
+    background-color: black;
+    text-align: center;
+    justify-content: center;
+    border-radius: 30px;
+}
+
+a {
+    text-decoration-line: none;
+    color: white;
+    line-height: 50px;
+    font-size: 20px;
 }
