@@ -16,25 +16,34 @@ from langchain.schema import Document
 import pandas as pd
 import json
 from .models import History
+from datetime import datetime
 
 # Chroma 데이터베이스 초기화 - 사전에 database가 완성 되어 있다는 가정하에 진행 - aivleschool_qa.csv 내용이 저장된 상태임
 embeddings = OpenAIEmbeddings(model = "text-embedding-ada-002")
 database = Chroma(persist_directory = "./database", embedding_function = embeddings)
 
 def index(request):
+    request.session.flush()
+    request.session['chat_history'] = []
     return render(request, 'gpt/index.html')
 
 def chat(request):
+    # if request.method == 'GET':
+    #     request.session.flush()
+    #     request.session['chat_history'] = []
+    #     return render(request, 'gpt/result.html')
+    
     query = request.POST.get('question')
+    input_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    
     session_memory = request.session.get('chat_history', [])
     print(session_memory)
-    
     memory = ConversationBufferMemory(memory_key='chat_history', input_key='question', output_key='answer', return_messages=True)
 
     for item in session_memory:
         memory.save_context({'question' : item['question']}, {'answer' : item['answer']})
-    print(memory.load_memory_variables({}))
-    
+        
+
     # model
     chat = ChatOpenAI(model="gpt-3.5-turbo")
     k = 3
@@ -45,17 +54,14 @@ def chat(request):
     sim1, sim2, sim3 = [round(res[1], 5) for res in search_res]
     
     result = qa(query)
+    output_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+    session_memory += [{'question' : query, 'answer' : result['answer'], 'input_time' : input_time, 'output_time' : output_time}]
+    request.session['chat_history'] = session_memory
     
     # 데이터 관리 DB 입력
-    hist = History(query=query, sim1=sim1, sim2=sim2, sim3=sim3, answer=result['answer'])
+    hist = History(query=query, sim1=sim1, sim2=sim2, sim3=sim3, answer=result['answer'], date=input_time, s_id=request.session.session_key)
     hist.save()
-    
-    q_msg, a_msg = [], []
-    for idx, mem in enumerate(memory.load_memory_variables({})['chat_history']):
-        if idx % 2 == 0 : q_msg.append(mem.content)
-        else : a_msg.append(mem.content)
-
-    request.session['chat_history'] = [{'question' : qm, 'answer' : am} for qm, am in zip(q_msg, a_msg)]
     
     context = {'question': query, 'result': result["answer"]}
     return render(request, 'selfchatgpt/result.html', context)
