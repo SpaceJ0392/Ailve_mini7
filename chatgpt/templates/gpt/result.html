@@ -1,16 +1,27 @@
 {% load static %}
 {% block extrahead %}
-<link rel="stylesheet" href="{% static 'gtp/style.css' %}">
+    <link rel="stylesheet" href="{% static 'gpt/style.css' %}">
 {% endblock %}
+
+<div id="file-module-0">
+    <label>Aivle chat-bot</label>
+</div>
+<div class='main'>
+    {% for msg in data %}
+        <div class="chat">
+            <div class="question">{{ msg.question }}</div>
+            <div class="timeline">{{ msg.input_time }}</div>
+        </div>
+        <div class="chat">
+            <div class="answer">{{ msg.result }}</div>
+            <div class="timeline">{{ msg.output_time }}</div>
+        </div>
+    {% endfor %}
+</div>
 <form action="chat" method="post" entype="application/x-www-form-urlencoded">
     {% csrf_token %}
-    <div id="file-module-0">
-        <label>chatgtp에게 요청하기</label>
-        <textarea id="question" name="question">{{question}}</textarea>
+    <div class='question-wrapper'>
+        <textarea id="question" name="question" rows="2" required></textarea>
+        <button id="text-button" type="submit" >Send</button>
     </div>
-    <div>
-      <label>응답</label>
-      <span id="result">{{result}}</span>
-  </div>
-    <div><button id="text-button" type="submit" >질문</button></div>
 </form>

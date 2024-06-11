@@ -63,5 +63,7 @@ def chat(request):
     hist = History(query=query, sim1=sim1, sim2=sim2, sim3=sim3, answer=result['answer'], date=input_time, s_id=request.session.session_key)
     hist.save()
     
-    context = {'question': query, 'result': result["answer"]}
-    return render(request, 'selfchatgpt/result.html', context)
+    context = {'data':[{'question': mem['question'], 'result': mem["answer"], 
+                'input_time' : mem['input_time'], 'output_time' : mem['output_time']} for mem in session_memory]}
+
+    return render(request, 'gpt/result.html', context)
