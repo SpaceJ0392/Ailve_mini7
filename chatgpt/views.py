@@ -27,12 +27,15 @@ def index(request):
     request.session['chat_history'] = []
     return render(request, 'gpt/index.html')
 
+
+from django.views.decorators.csrf import csrf_exempt
+
+def is_ajax(request):
+  return request.headers.get('x-requested-with') == 'XMLHttpRequest'
+
+@csrf_exempt
 def chat(request):
-    # if request.method == 'GET':
-    #     request.session.flush()
-    #     request.session['chat_history'] = []
-    #     return render(request, 'gpt/result.html')
-    
+
     query = request.POST.get('question')
     input_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     
@@ -54,7 +57,7 @@ def chat(request):
     sim1, sim2, sim3 = [round(res[1], 5) for res in search_res]
     
     result = qa(query)
-    output_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    output_time = datetime.now().strftime('%Y.%m.%d %H:%M:%S')
 
     session_memory += [{'question' : query, 'answer' : result['answer'], 'input_time' : input_time, 'output_time' : output_time}]
     request.session['chat_history'] = session_memory
@@ -65,5 +68,16 @@ def chat(request):
     
     context = {'data':[{'question': mem['question'], 'result': mem["answer"], 
                 'input_time' : mem['input_time'], 'output_time' : mem['output_time']} for mem in session_memory]}
-
-    return render(request, 'gpt/result.html', context)
+    
+    if is_ajax(request):
+        latest_message = session_memory[-1]
+        # print(latest_message)
+        context = {
+            'input_time' : latest_message['input_time'],
+            'answer' : latest_message['answer'],
+            'output_time' : latest_message['output_time'],
+        }
+        return JsonResponse(context, safe = False)
+    
+    elif request.method == 'POST':
+        return render(request, 'gpt/result.html', context)

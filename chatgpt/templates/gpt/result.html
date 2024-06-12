@@ -1,12 +1,14 @@
 {% load static %}
 {% block extrahead %}
     <link rel="stylesheet" href="{% static 'gpt/style.css' %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 {% endblock %}
 
 <div id="file-module-0">
     <label>Aivle chat-bot</label>
 </div>
-<div class='main'>
+
+<div class='main' id="chat-context">
     {% for msg in data %}
         <div class="chat">
             <div class="question">{{ msg.question }}</div>
@@ -18,10 +20,72 @@
         </div>
     {% endfor %}
 </div>
-<form action="chat" method="post" entype="application/x-www-form-urlencoded">
+<form id="chat-form" action="chat" method="post" enctype="application/x-www-form-urlencoded">
     {% csrf_token %}
     <div class='question-wrapper'>
         <textarea id="question" name="question" rows="2" required></textarea>
-        <button id="text-button" type="submit" >Send</button>
+        <button id="text-button" type="submit">Send</button>
     </div>
 </form>
+
+{% comment %} <script>
+    $(document).ready(function(){
+        $("#text-button").click(function(){
+            
+        });
+      });
+</script> {% endcomment %}
+
+
+{% comment %}
+ 1. 버튼 클릭시 액션 - JavaScript()
+ 2. 웹페이지를 변동 없이 바꾸는 방법 > chatcontext 안에 submit 버튼 클릭 후 이벤트 동작 정지 > 
+ chatcontext에 입력받은 #question.val()의 내용을 가진 태그 추가 > 추가 이후, POST방식을 통하여 전체 내용 출력
+{% endcomment %}
+<script>
+    $(document).ready(function() {
+        $('#chat-form').on('submit', function(event) {
+            event.preventDefault();
+
+            let question_time = new Date();   
+            
+            var questionText = $('#question').val();
+
+            var chatcontext = $('#chat-context');
+            var questionDiv = $('<div class="chat"><div class="question">' + questionText + '</div>');
+            var question_time_Div = $('<div class="timeline">' + question_time.toLocaleString() + '</div>');
+
+            chatcontext.append(questionDiv);
+            chatcontext.append(question_time_Div)
+
+            chatcontext.scrollTop(chatcontext.prop("scrollHeight"));
+
+            $.ajax({
+                type: 'POST',
+                url: $('#chat-form').attr('action'),
+                data: {
+                    'question': questionText
+                },
+                success: function(data) {
+                    var answerDiv = $('<div class="chat"><div class="answer">' + data.answer + '</div><div class="timeline">' + data.output_time + '</div></div>');
+                    
+                    chatcontext.append(answerDiv);
+
+                    chatcontext.scrollTop(chatcontext.prop("scrollHeight"));
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                }
+            });
+        });
+    });
+</script>
+
+{% comment %} 
+* 해결 방법 : 
+AJAX로 처리하였고, index.html부분에서는 질문을 입력하고 질문버튼 입력시 chat() request.method == 'POST'로 구동되며,
+위에 반복문을 통하여 처음 대화내용을 가져옴.
+이후, result.html에서 질문을 입력후 send를 하였을 때, id가 chat-form인 태그내에서, submit이 작동하였을 때, 이벤트(event.preventDefault)를 주어서,
+POST방식을 중단하고, chat-context인 태그 안에, #question.val() 값을 가진 태그를 작성.
+AJAX 동작을 통하여, input_time, result, output_time을 출력하였당 
+{% endcomment %}
