@@ -17,6 +17,10 @@ li {
     padding-bottom: 10px;
     padding-left: 10px;
     margin: 0px;
+
+    background-color: white;
+    position: sticky;
+    top: 0;
 }
 
 .logo {
