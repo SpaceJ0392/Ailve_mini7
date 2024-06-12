@@ -33,6 +33,8 @@ $(document).ready(function(){
 
             $("#main").append(chat);
         }
+
+        adjustTextareaHeight(); // 새로운 div가 추가될 때마다 textarea의 높이를 조절
     }
 
     // 버튼 클릭 시
@@ -60,4 +62,28 @@ $(document).ready(function(){
     $("#question").keypress(function(event){
         if(event.keyCode == 13) $("#text-button").click();
     });
+
+
+    // 입력창의 내용이 변경될 때마다 높이를 조정하는 함수
+    function adjustTextareaHeight() {
+        var textarea = document.getElementById('question');
+        var div = document.getElementById('question-wrapper');
+
+        var newHeight = textarea.scrollHeight; // 입력된 내용의 높이를 가져옴
+        div.style.height = newHeight + 'px'; // 높이를 설정
+        console.log(div.style.height);
+    }
+
+    // 페이지가 로드될 때와 입력창의 내용이 변경될 때마다 함수를 호출하여 높이를 조정
+    // window.onload = function() {
+    //     adjustTextareaHeight(); // 페이지 로드될 때 호출
+    //     document.getElementById('question').addEventListener('input', adjustTextareaHeight); // 입력창 내용이 변경될 때마다 호출
+    // };
+    $(window).on("load", function() {
+        adjustTextareaHeight(); // 페이지 로드될 때 호출
+        // 입력창의 내용이 변경될 때마다 textarea의 높이를 조정
+        $("#question").on("input", adjustTextareaHeight);
+    });
+    // // 입력창의 내용이 변경될 때마다 textarea의 높이를 조정
+    // $("#question").on("input", adjustTextareaHeight);
 });
