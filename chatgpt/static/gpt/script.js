@@ -123,3 +123,9 @@ $(document).ready(function(){
     // 입력창의 내용이 변경될 때마다 textarea의 높이를 조정
     $("#question").on("input", adjustTextareaHeight);
 });
+
+document.addEventListener("DOMContentLoaded", function() {
+    // main 요소의 높이를 가져와서 CSS 변수로 설정합니다.
+    const mainHeight = document.getElementById('main').offsetHeight;
+    document.documentElement.style.setProperty('--main-height', mainHeight + 'px');
+});

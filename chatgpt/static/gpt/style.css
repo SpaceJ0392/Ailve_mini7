@@ -125,3 +125,13 @@
     font-weight: bold;
     text-align: center;
 }
+
+#footer {
+    width: 100%;
+    /* container의 크기에서 header의 크기와 main의 크기를 뺀 나머지 영역으로 지정 */
+    height: calc(100vh - 50px - 60px - 72px - var(--main-height));
+    /* 나머지 영역의 높이는 화면 전체 높이에서 header의 높이와 main의 높이를 뺀 값 */
+    /* 100vh는 브라우저의 높이를 의미합니다. */
+    /* 50px는 header의 높이, 60px는 main의 상단 마진, 72px는 main의 하단 마진을 의미합니다. */
+    /* 이 값을 조정하여 필요에 맞게 footer의 높이를 지정할 수 있습니다. */
+}
