@@ -1,27 +1,26 @@
 {% load static %}
 {% block extrahead %}
     <link rel="stylesheet" href="{% static 'gpt/style.css' %}">
+
+    {% comment %} web font {% endcomment %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
 {% endblock %}
 
-<div id="file-module-0">
-    <label>Aivle chat-bot</label>
-</div>
-<div class='main'>
-    {% for msg in data %}
-        <div class="chat">
-            <div class="question">{{ msg.question }}</div>
-            <div class="timeline">{{ msg.input_time }}</div>
-        </div>
-        <div class="chat">
-            <div class="answer">{{ msg.result }}</div>
-            <div class="timeline">{{ msg.output_time }}</div>
-        </div>
-    {% endfor %}
-</div>
-<form action="chat" method="post" entype="application/x-www-form-urlencoded">
-    {% csrf_token %}
-    <div class='question-wrapper'>
-        <textarea id="question" name="question" rows="2" required></textarea>
-        <button id="text-button" type="submit" >Send</button>
+<div id='container'>
+    <div id="header">
+        <label>Aivle chat-bot</label>
     </div>
-</form>
+    <div id='main'>
+    </div>
+    <form id='question_form' action="" method="post" entype="application/x-www-form-urlencoded">
+        {% csrf_token %}
+        <div class='question-wrapper'>
+            <textarea id="question" name="question" rows="2" placeholder='챗봇에게 질문하세요!' required></textarea>
+            <button id="text-button" type="submit">▷</button>
+        </div>
+    </form>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="{% static 'gpt/script.js' %}"></script>
