@@ -37,18 +37,16 @@ $(document).ready(function(){
     }
 
     var is_valid = 1
-
-    if (is_valid == 1) {
-        // 버튼 클릭 시
-        $("#text-button").click(function(event){
-            
+    // 버튼 클릭 시
+    $("#text-button").click(function(event){
+        if (is_valid === 1) {
             is_valid = 0;
             event.stopPropagation();
             const now = formatDate(new Date());
 
             let query = {type : 'query', data : $("#question").val()}; // textarea에 입력된 데이터 가져오기
             console.log(query)
-            
+            $("#question").val('');
             addDiv(query);
             initTextareaHeight(); // 새로운 div가 추가될 때마다 textarea의 높이를 조절
 
@@ -68,19 +66,22 @@ $(document).ready(function(){
                     },
                 error: (error) => console.error("Failed to send POST request:", error)
             });
-                    
-            $("#question").text('');
-        });
-    }
+        }
+    });
 
     // 엔터 키 입력 시
     $("#question").on('keydown', function(event){
         if (event.shiftKey) {
                 if(event.keyCode == 13) {
-                    
             }
-        } else if (event.keyCode == 13 && is_valid == 1) {
-            $("#text-button").click();
+        } else if (event.keyCode == 13) {
+            event.preventDefault()
+            if ($('#question').val() !== '' && is_valid === 1 ) {
+                event.preventDefault()
+                $("#text-button").click();
+            }
+        } else if (event.keyCode == 13 && is_valid === 0) {
+            event.preventDefault()
         }
     });
 
