@@ -7,7 +7,7 @@ class History(models.Model):
     sim2 = models.FloatField(null=False)    
     sim3 = models.FloatField(null=False)    
     answer = models.TextField(null=False)
-    date = models.DateTimeField(auto_now_add=False)
+    date = models.DateTimeField(auto_now_add=True)
     s_id = models.CharField(max_length=500, null=True)
     
     def __str__(self) -> str:

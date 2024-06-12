@@ -1,6 +1,6 @@
 {% load static %}
 {% block extrahead %}
-<link rel="stylesheet" href="{% static 'gtp/style.css' %}">
+<link rel="stylesheet" href="{% static 'gpt/style.css' %}">
 {% endblock %}
 <form action="chat" method="post" entype="application/x-www-form-urlencoded">
     {% csrf_token %}
@@ -10,4 +10,3 @@
     </div>
     <div><button id="text-button" type="submit" >질문</button></div>
 </form>
-
