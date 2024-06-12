@@ -36,6 +36,20 @@ $(document).ready(function(){
         }
     }
 
+    const toggleButtonState = function() {
+        if ($('#question').val().trim() === '') {
+            $("#text-button").prop("disabled", true);
+        } else {
+            $("#text-button").prop("disabled", false);
+        }
+    }
+    
+    // 입력란 내용이 변경될 때 버튼 상태 업데이트
+    $("#question").on('input', toggleButtonState);
+    
+    // 초기 버튼 상태 설정
+    toggleButtonState();
+
     var is_valid = 1
     // 버튼 클릭 시
     $("#text-button").click(function(event){
@@ -48,7 +62,7 @@ $(document).ready(function(){
             console.log(query)
             $("#question").val('');
             addDiv(query);
-            
+            window.scrollTo({left:0, top:document.body.scrollHeight, behavior:'smooth'});
             $("#text-button").prop("disabled", true);
 
             $.ajax({
@@ -60,7 +74,8 @@ $(document).ready(function(){
                 beforeSend: (xhr) => xhr.setRequestHeader("X-CSRFToken", csrfToken), // CSRF 토큰을 헤더에 포함
                 success: (data) => {
                     addDiv(data)
-                    $("#text-button").prop("disabled", false);
+                    window.scrollTo({left:0, top:document.body.scrollHeight, behavior:'smooth'});
+                    toggleButtonState();
                     is_valid = 1;
                     },
                 error: (error) => console.error("Failed to send POST request:", error)
