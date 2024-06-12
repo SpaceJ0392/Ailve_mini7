@@ -22,30 +22,22 @@ from datetime import datetime
 embeddings = OpenAIEmbeddings(model = "text-embedding-ada-002")
 database = Chroma(persist_directory = "./database", embedding_function = embeddings)
 
-def index(request):
-    request.session.flush()
-    request.session['chat_history'] = []
-    return render(request, 'gpt/index.html')
-
-
-from django.views.decorators.csrf import csrf_exempt
-
-def is_ajax(request):
-  return request.headers.get('x-requested-with') == 'XMLHttpRequest'
-
-@csrf_exempt
 def chat(request):
-
-    query = request.POST.get('question')
-    input_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    if request.method == 'GET':
+        request.session.flush()
+        request.session['chat_history'] = []
+        return render(request, 'gpt/result.html')
+    
+    data = json.loads(request.body.decode('utf-8'))
+    query = data.get('question')
+    input_time = data.get('time')
     
     session_memory = request.session.get('chat_history', [])
-    print(session_memory)
     memory = ConversationBufferMemory(memory_key='chat_history', input_key='question', output_key='answer', return_messages=True)
 
     for item in session_memory:
         memory.save_context({'question' : item['question']}, {'answer' : item['answer']})
-        
+
 
     # model
     chat = ChatOpenAI(model="gpt-3.5-turbo")
@@ -57,27 +49,14 @@ def chat(request):
     sim1, sim2, sim3 = [round(res[1], 5) for res in search_res]
     
     result = qa(query)
-    output_time = datetime.now().strftime('%Y.%m.%d %H:%M:%S')
+    output_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
     session_memory += [{'question' : query, 'answer' : result['answer'], 'input_time' : input_time, 'output_time' : output_time}]
     request.session['chat_history'] = session_memory
     
     # 데이터 관리 DB 입력
-    hist = History(query=query, sim1=sim1, sim2=sim2, sim3=sim3, answer=result['answer'], date=input_time, s_id=request.session.session_key)
+    hist = History(query=query, sim1=sim1, sim2=sim2, sim3=sim3, answer=result['answer'], s_id=request.session.session_key)
     hist.save()
     
-    context = {'data':[{'question': mem['question'], 'result': mem["answer"], 
-                'input_time' : mem['input_time'], 'output_time' : mem['output_time']} for mem in session_memory]}
-    
-    if is_ajax(request):
-        latest_message = session_memory[-1]
-        # print(latest_message)
-        context = {
-            'input_time' : latest_message['input_time'],
-            'answer' : latest_message['answer'],
-            'output_time' : latest_message['output_time'],
-        }
-        return JsonResponse(context, safe = False)
-    
-    elif request.method == 'POST':
-        return render(request, 'gpt/result.html', context)
+    json_data = {'type': 'result', 'result': result['answer'], 'input_time' : input_time, 'output_time' : output_time}
+    return JsonResponse(json_data)
