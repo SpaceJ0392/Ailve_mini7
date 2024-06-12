@@ -2,7 +2,7 @@
 {% load static %}
 <html>
     <head>        
-        <title>Django</title>
+        <title>AIVLE chatbot</title>
         <meta charset="utf-8">    
         <link rel="stylesheet" href="{% static 'base.css' %}" />
 
@@ -15,11 +15,40 @@
         <div class="display">
             <h1 class="header"><a href="/"><img class="logo" src="{% static '/assets/chat.jpg' %}"></a></h1>
             <div class="container display">
-                <div class="subtitle noto-sans">AI트랙 수도권 2반 7조</div>
-                <h1 class="noto-sans-bold">7차 미니 프로젝트</h1>
-                <div class="btn noto-sans"><a href="/chatgpt/">대화하기 ></a></div>
-                {% comment %} <h2>Django</h2>
-                <p><a href="https://www.djangoproject.com/" target="_blank">Django</a>는 Python으로 작성된 오픈 소스 웹 프레임워크로, 빠르고 쉬운 웹 개발을 가능하게 합니다.</p> {% endcomment %}
+                <div class="subtitle noto-sans" onclick='window.location.href="/chatgpt/"'>7차 미니프로젝트 AI트랙 2반 5조</div>
+                <h1 class="noto-sans-bold">AIVLE School 챗봇</h1>
+                <button class="btn noto-sans" onclick='window.location.href="/chatgpt/"'>질문하기 ></button>
+                <img class="main-img" src="{% static '/assets/main.jpg' %}">
+                <div class="caption">Illustration: Copilot</div>
+                <div class="noto-sans content">
+                    AIVLE School chatbot은 에이블스쿨 지원자를 위한 QA 챗봇입니다. 에이블스쿨 지원자들이 궁금해 할 만한 대부분의 질문에 적절한 답변을 제시하는 것을 목표로 하고 있습니다.
+                </div>
+                <div class="noto-sans content">
+                    에이블스쿨 홈페이지 Q&A와 추가 데이터를 수집하여 벡터DB로 만들고 GPT3.5버전과 연계한 RAG 챗봇 모델을 생성하여 QA 모델을 제공하고 있습니다. 이번 7차 미니프로젝트는 지금까지 배운 다양한 기술들을 하나로 엮은 시스템을 구축하였습니다.
+                </div>
+
+                <h3 class="div-title">GPT-3.5</h3>
+                <div class="noto-sans content"><a href="https://platform.openai.com/docs/models/gpt-3-5-turbo" target="_blank">GPT-3.5 turbo</a> 모델은 자연어 또는 코드를 이해하고 생성할 수 있습니다.</div>
+                <div class="noto-sans content">Chat Completions API를 사용하여 채팅에 최적화 되어있지만, 채팅이 아닌 작업에도 잘 작동합니다. 2022년부터 ChatGPT가 GPT-3.5 모델을 파인튜닝하여 사용하고 있습니다.</div>
+                <h3 class="div-title">Django</h3>
+                <div class="noto-sans content"><a href="https://www.djangoproject.com/" target="_blank">Django</a>는 신속한 개발과 깔끔하고 실용적인 디자인을 장려하는 고급 Python 웹 프레임워크로, 빠르고 쉬운 웹 개발을 가능하게 합니다. 웹 개발의 번거로움을 대부분 처리해주므로 앱 개발에 집중할 수 있습니다. 이 프레임워크는 무료이며 오픈 소스입니다.</div>
+                <div class="noto-sans content">
+                    굉장히 빠른 속도 - Django는 개발자가 애플리케이션의 정의부터 완성까지 최대한 빠르게 진행할 수 있도록 설계되었습니다.
+                </div>
+                <div class="noto-sans content">
+                    안심할 수 있는 보안 - Django는 보안을 중요하게 생각하며 개발자가 흔히 하는 많은 보안 실수를 피할 수 있도록 돕습니다.
+                </div>
+                <div class="noto-sans content">
+                    뛰어난 확장성 - 몇몇의 가장 바쁜 웹사이트들은 Django의 빠르고 유연한 확장 기능을 사용하여 구현되었습니다.
+                </div>
+                <img class="main-img" src="{% static '/assets/django.png' %}">
+                <div class="caption">MDN web docs</div>
+                <h3 class="div-title">참고사항</h3>
+                <div class="noto-sans content">이 페이지는 <a href="https://openai.com/index/chatgpt/" target="_blank">Introducing ChatGPT</a> 페이지 기반으로 개발되었습니다.</div>
+            </div>
+            <div class="noto-sans footer">
+                AIVLE School 2반 5조 © 2024
             </div>
         </div>
     </body>
+</html>
