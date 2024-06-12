@@ -13,14 +13,15 @@ $(document).ready(function(){
     
         return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     }
-    
+
     // 새로운 div를 추가하는 함수
     const addDiv = function(data) {
         let seq = ""
 
         if (data['type'] === 'query') {
+            texts = data['data'].replace(/(?:\r\n|\r|\n)/g, '<br>')
             let chat = $("<div>").addClass("chat_question")
-            seq = $("<div>").addClass("question").text(data['data']);
+            seq = $("<div>").addClass("question").html(texts);
             chat.append(seq)
             $("#main").append(chat);
         } else {
@@ -35,29 +36,50 @@ $(document).ready(function(){
         }
     }
 
-    // 버튼 클릭 시
-    $("#text-button").click(function(event){
-        const now = formatDate(new Date());
+    var is_valid = 1
 
-        let query = {type : 'query', data : $("#question").val()}; // textarea에 입력된 데이터 가져오기
-        console.log(query)
-        $("#question").val('');
+    if (is_valid == 1) {
+        // 버튼 클릭 시
+        $("#text-button").click(function(event){
+            
+            is_valid = 0;
+            event.stopPropagation();
+            const now = formatDate(new Date());
 
-        addDiv(query);
+            let query = {type : 'query', data : $("#question").val()}; // textarea에 입력된 데이터 가져오기
+            console.log(query)
+            
+            addDiv(query);
+            
+            $("#text-button").prop("disabled", true);
 
-        $.ajax({
-            url: "",
-            type: "POST",
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify({question: query.data, time: now}),
-            beforeSend: (xhr) => xhr.setRequestHeader("X-CSRFToken", csrfToken), // CSRF 토큰을 헤더에 포함
-            success: (data) => addDiv(data),
-            error: (error) => console.error("Failed to send POST request:", error)
+            $.ajax({
+                url: "",
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                
+                data: JSON.stringify({question: query.data, time: now}),
+                beforeSend: (xhr) => xhr.setRequestHeader("X-CSRFToken", csrfToken), // CSRF 토큰을 헤더에 포함
+                success: (data) => {
+                    addDiv(data)
+                    $("#text-button").prop("disabled", false);
+                    is_valid = 1;
+                    },
+                error: (error) => console.error("Failed to send POST request:", error)
+            });
+                    
+            $("#question").text('');
         });
-    });
+    }
 
     // 엔터 키 입력 시
-    $("#question").keypress(function(event){
-        if(event.keyCode == 13) $("#text-button").click();
+    $("#question").on('keydown', function(event){
+        if (event.shiftKey) {
+                if(event.keyCode == 13) {
+                    
+            }
+        } else if (event.keyCode == 13 && is_valid == 1) {
+            $("#text-button").click();
+        }
     });
 });
