@@ -19,9 +19,8 @@ $(document).ready(function(){
         let seq = ""
 
         if (data['type'] === 'query') {
-            texts = data['data'].replace(/(?:\r\n|\r|\n)/g, '<br>')
             let chat = $("<div>").addClass("chat_question")
-            seq = $("<div>").addClass("question").html(texts);
+            seq = $("<div>").addClass("question").text(data['data']);
             chat.append(seq)
             $("#main").append(chat);
         } else {
@@ -48,38 +47,37 @@ $(document).ready(function(){
 
             let query = {type : 'query', data : $("#question").val()}; // textarea에 입력된 데이터 가져오기
             console.log(query)
-            
+            $("#question").val('');
+
             addDiv(query);
-            
+
             $("#text-button").prop("disabled", true);
 
             $.ajax({
                 url: "",
                 type: "POST",
                 contentType: "application/json; charset=utf-8",
-                
                 data: JSON.stringify({question: query.data, time: now}),
                 beforeSend: (xhr) => xhr.setRequestHeader("X-CSRFToken", csrfToken), // CSRF 토큰을 헤더에 포함
                 success: (data) => {
                     addDiv(data)
                     $("#text-button").prop("disabled", false);
                     is_valid = 1;
-                    },
+                },
                 error: (error) => console.error("Failed to send POST request:", error)
             });
-                    
-            $("#question").text('');
+            
         });
     }
 
     // 엔터 키 입력 시
-    $("#question").on('keydown', function(event){
-        if (event.shiftKey) {
-                if(event.keyCode == 13) {
-                    
+    $("#question").keypress(function(event){
+        $("#question").on('keydown', function(shift_event))
+            if(shift_event && event.keyCode == 13) {
+                event.preventDefault();
             }
-        } else if (event.keyCode == 13 && is_valid == 1) {
-            $("#text-button").click();
-        }
+            elif(!shift_eventevent.keyCode == 13 && is_valid == 1) {
+                $("#text-button").click();
+        };
     });
 });
