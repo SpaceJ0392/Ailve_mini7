@@ -12,15 +12,17 @@
     <div id="header">
         <label>Aivle chat-bot</label>
     </div>
-    <div id='main'>
+    <div id='main'></div>
+    <div id = 'footer'>
+        <form id='question_form' action="" method="post" entype="application/x-www-form-urlencoded">
+            {% csrf_token %}
+            <div id='question-wrapper'>
+                <textarea id="question" name="question" rows="2" placeholder='챗봇에게 질문하세요!'></textarea>
+                <button id="text-button" type="submit">▷</button>
+            </div>
+        </form>
     </div>
-    <form id='question_form' action="" method="post" entype="application/x-www-form-urlencoded">
-        {% csrf_token %}
-        <div class='question-wrapper'>
-            <textarea id="question" name="question" rows="2" placeholder='챗봇에게 질문하세요!'></textarea>
-            <button id="text-button" type="submit">▷</button>
-        </div>
-    </form>
 </div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="{% static 'gpt/script.js' %}"></script>
