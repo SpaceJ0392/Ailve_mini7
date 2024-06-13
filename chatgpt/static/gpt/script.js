@@ -39,8 +39,11 @@ $(document).ready(function(){
     const toggleButtonState = function() {
         if ($('#question').val().trim() === '') {
             $("#text-button").prop("disabled", true);
+            $("#text-button").fadeTo(0, 0.5);
         } else {
             $("#text-button").prop("disabled", false);
+            $("#text-button").fadeTo(0, 1);
+
         }
     }
     
@@ -58,6 +61,7 @@ $(document).ready(function(){
             event.stopPropagation();
             const now = formatDate(new Date());
 
+
             let query = {type : 'query', data : $("#question").val()}; // textarea에 입력된 데이터 가져오기
             console.log(query)
             $("#question").val('');
@@ -66,6 +70,7 @@ $(document).ready(function(){
             initTextareaHeight()
 
             $("#text-button").prop("disabled", true);
+            $("#text-button").fadeTo(0, 0.5);
 
             $.ajax({
                 url: "",
