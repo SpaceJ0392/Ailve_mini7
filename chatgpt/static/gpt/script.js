@@ -18,22 +18,26 @@ $(document).ready(function(){
     const addDiv = function(data) {
         let seq = ""
 
-        if (data['type'] === 'query') {
-            texts = data['data'].replace(/(?:\r\n|\r|\n)/g, '<br>')
-            let chat = $("<div>").addClass("chat_question")
-            seq = $("<div>").addClass("question").html(texts);
-            chat.append(seq)
-            $("#main").append(chat);
-        } else {
-            let chat = $("<div>").addClass("chat_answer")
-            icon = $("<img>").addClass("chat_answer_icon").attr("src", "../../static/assets/chat.jpg");
-            chat.append(icon)
+        // chat_question_div 추가
+        texts = data['data'].replace(/(?:\r\n|\r|\n)/g, '<br>');
+        let chat_question_DIV = $("<div>").addClass("chat_question");
+        question_seq = $("<div>").addClass("question").html(texts);
+        chat_question_DIV.append(question_seq);
+        $("#main").append(chat_question_DIV);
 
-            seq = $("<div>").addClass("answer").text(data['result']);
-            chat.append(seq)
+        // chat_answer_div 로딩 추가
+        let chat_answer_DIV = $("<div>").addClass("chat_answer");
+        icon = $("<img>").addClass("chat_answer_icon").attr("src", "../../static/assets/chat.jpg");
+        chat_answer_DIV.append(icon);
 
-            $("#main").append(chat);
-        }
+
+        answer_ID = "answer_" + Date.now();
+        answer_seq = $("<img>").addClass("answer").attr({"id" : answer_ID, "src" : "../../static/assets/loading.gif"});
+        chat_answer_DIV.append(answer_seq);
+
+        $("#main").append(chat_answer_DIV);
+        
+        return answer_ID
     }
 
     const toggleButtonState = function() {
@@ -61,10 +65,8 @@ $(document).ready(function(){
             let query = {type : 'query', data : $("#question").val()}; // textarea에 입력된 데이터 가져오기
             console.log(query)
             $("#question").val('');
-            addDiv(query);
-            
-            initTextareaHeight()
-
+            ans_ID = addDiv(query);
+            window.scrollTo({left:0, top:document.body.scrollHeight, behavior:'smooth'});
             $("#text-button").prop("disabled", true);
 
             $.ajax({
@@ -75,7 +77,10 @@ $(document).ready(function(){
                 data: JSON.stringify({question: query.data, time: now}),
                 beforeSend: (xhr) => xhr.setRequestHeader("X-CSRFToken", csrfToken), // CSRF 토큰을 헤더에 포함
                 success: (data) => {
-                    addDiv(data)
+                    // seq = $("<div>").addClass("answer").text(data['result']);
+                    // chat_answer_DIV.append(seq)
+                    // $("#main").append(chat_answer_DIV); 
+                    $("#" + ans_ID).replaceWith($("<div>").addClass("answer").text(data['result']));
                     window.scrollTo({left:0, top:document.body.scrollHeight, behavior:'smooth'});
                     toggleButtonState();
                     is_valid = 1;
@@ -100,41 +105,4 @@ $(document).ready(function(){
             event.preventDefault()
         }
     });
-
-
-    // 입력창의 내용이 변경될 때마다 높이를 조정하는 함수
-    function adjustTextareaHeight() {
-        var textarea = document.getElementById('question');
-        var div = document.getElementById('question-wrapper');
-
-        var newHeight = textarea.scrollHeight; // 입력된 내용의 높이를 가져옴
-        div.style.height = newHeight + 'px'; // 높이를 설정
-        textarea.style.height = newHeight + 'px'; // textarea의 높이 설정
-    }
-    const defaultHeight = $('#question').css('height');
-    console.log(defaultHeight)
-    // var defaultHeight = textarea.style.height;
-
-    function initTextareaHeight() {
-        var textarea = document.getElementById('question');
-        var div = document.getElementById('question-wrapper');
-        
-        // textarea 내용을 빈 문자열로 설정하여 높이를 0으로 만듭니다.
-        textarea.value = '';
-        // 스크롤 높이를 측정하여 textarea와 wrapper의 높이로 적용합니다.
-        // var newHeight = 50;
-        textarea.style.height = defaultHeight;
-        div.style.height = defaultHeight;
-    
-        adjustTextareaHeight(); // textarea의 높이 자동 조정
-    }
-
-    // 입력창의 내용이 변경될 때마다 textarea의 높이를 조정
-    $("#question").on("input", adjustTextareaHeight);
 });
-
-// document.addEventListener("DOMContentLoaded", function() {
-//     // main 요소의 높이를 가져와서 CSS 변수로 설정합니다.
-//     const mainHeight = document.getElementById('main').offsetHeight;
-//     document.documentElement.style.setProperty('--main-height', mainHeight + 'px');
-// });
