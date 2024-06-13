@@ -49,14 +49,14 @@ class QA_ListAdmin(admin.ModelAdmin):
                 cnt = 0
                 for row in reader:
                     type, qa = row
-                    self.message_user(request, qa)
-                    self.message_user(
-                        request, database.similarity_search_with_score(qa, 3)
-                    )
+                    # self.message_user(request, qa)
+                    # self.message_user(
+                    #     request, database.similarity_search_with_score(qa, 1)
+                    # )
                     if qa is None:
                         continue
                     score = database.similarity_search_with_score(qa, 1)[0][1]
-                    self.message_user(request, score)
+                    # self.message_user(request, score)
                     if score > 0.2:
                         # 크로마db 저장
                         doc = [Document(page_content=qa)]
